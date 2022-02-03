@@ -13,6 +13,7 @@ router.get('/', async(req, res) => {
         res.render('authors/index', { authors: authors, searchOptions: req.query })
 
     } catch {
+        console.log("error agaya")
         res.redirect('/')
     }
 })
@@ -20,7 +21,7 @@ router.get('/', async(req, res) => {
 //NEW Author ROUTE
 
 router.get('/new', (req, res) => {
-    res.render('authors/new', { author: "" })
+    res.render('authors/new', { author: " " })
 })
 
 //Create Author ROUTE
@@ -33,6 +34,7 @@ router.post('/', async(req, res) => {
 
     try {
         const newAuthor = await author.save()
+        console.log(newAuthor)
         res.redirect(`authors`)
 
     } catch {
