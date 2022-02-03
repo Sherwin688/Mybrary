@@ -4,6 +4,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 const bodyParser = require('body-parser')
 const authorRouter = require('./routes/authors')
+const bookRouter = require('./routes/books')
+
 const express = require('express')
 const app = express()
 const expressLayouts = require('express-ejs-layouts')
@@ -17,6 +19,9 @@ app.use(expressLayouts)
 app.use(express.static('public'))
 app.use('/', indexRouter)
 app.use('/authors', authorRouter)
+
+app.use('/books', bookRouter)
+
 
 app.listen(process.env.PORT || 3000)
 
