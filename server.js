@@ -1,6 +1,7 @@
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
+const methodOverride = require("method-override")
 
 const bodyParser = require('body-parser')
 const authorRouter = require('./routes/authors')
@@ -17,7 +18,10 @@ app.set('views', __dirname + '/views')
 app.set('layout', 'layouts/layout')
 app.use(expressLayouts)
 app.use(express.static('public'))
+app.use(methodOverride('_method'))
+
 app.use('/', indexRouter)
+
 app.use('/authors', authorRouter)
 
 app.use('/books', bookRouter)

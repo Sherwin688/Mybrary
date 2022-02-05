@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const Author = require('../models/author')
+const Book = require('../models/book')
     //ALL AUTHORS ROUTE
 router.get('/', async(req, res) => {
     let searchOptions = {}
@@ -35,7 +36,8 @@ router.post('/', async(req, res) => {
     try {
         const newAuthor = await author.save()
         console.log(newAuthor)
-        res.redirect(`authors`)
+        res.redirect(`/authors/${author.id}`)
+
 
     } catch {
         res.render('authors/new', {
@@ -44,6 +46,66 @@ router.post('/', async(req, res) => {
         })
     }
 
+})
+
+router.get('/:id', async(req, res) => {
+    try {
+        const author = await Author.findById(req.params.id)
+        const booksByAuthor = await Book.find({ author: req.params.id }).limit(6)
+        res.render('authors/show', { author: author, booksByAuthor: booksByAuthor })
+
+    } catch (err) {
+        console.log(err)
+        res.redirect('/')
+    }
+
+})
+
+router.get('/edit/:id', async(req, res) => {
+    try {
+        const author = await Author.findById(req.params.id)
+        res.render('authors/edit', { author: author })
+
+    } catch {
+        res.redirect('/authors')
+    }
+})
+router.put('/:id', async(req, res) => {
+    let author
+    try {
+        author = await Author.findById(req.params.id)
+        author.name = req.body.name
+        await author.save()
+        res.redirect(`/authors/${author.id}`)
+
+    } catch {
+
+        if (author == null) { res.redirect('/') } else {
+            res.render('authors/new', {
+                author: author,
+                errorMessage: "Error Updating Author"
+            })
+        }
+
+
+    }
+
+})
+router.delete('/:id', async(req, res) => {
+    let author
+    try {
+        const response = await Author.deleteOne({ _id: req.params.id });
+        console.log(response);
+        res.redirect(`/authors`)
+
+    } catch {
+        if (author == null) { res.redirect('/') } else {
+            res.redirect(`/authors/${author.id}`)
+        }
+
+
+
+    }
 })
 
 module.exports = router
